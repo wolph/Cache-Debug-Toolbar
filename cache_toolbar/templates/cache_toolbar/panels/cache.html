@@ -1,23 +1,46 @@
 {% load i18n %}
 <h4>{% trans 'Calls:' %}</h4>
-<h5>{% blocktrans with count as count and duration as duration %}{{ count }} calls in {{ duration }}ms{% endblocktrans %}</h5>
+<p class="fieldset">
+    <span class="legend">{% trans "Total Calls" %}:</span>
+    <span>{{ stats.calls }}</span>
+</fieldset>
+<p class="fieldset">
+	<span class="legend">{% trans "Total Time" %}:</span>
+	<span>{{ stats.duration }}ms</span>
+</fieldset>
+<p class="fieldset">
+	<span class="legend">{% trans "Hits" %}:</span>
+	<span>{{ stats.hits }}</span>
+</fieldset>
+<p class="fieldset">
+	<span class="legend">{% trans "Misses" %}:</span>
+	<span>{{ stats.misses }}</span>
+</fieldset>
+{% for command, count in commands.iteritems %}
+<p class="fieldset">
+    <input class="filter" value=".{{ command }}" type="checkbox" />
+	<span class="legend">{{ command }}:</span>
+	<span>{{ count }}</span>
+</fieldset>
+{% endfor %}
+
 <table>
     <thead>
         <tr>
-            <th>{% trans 'Start Time' %}</th>
-            <th>{% trans 'Duration (ms)' %}</th>
+            <th>{% trans 'Duration' %}</th>
             <th>{% trans 'Call' %}</th>
             <th>{% trans 'Args' %}</th>
+            <th>{% trans 'Result' %}</th>
             <th>{% trans 'Actions' %}</th>
         </tr>
     </thead>
     <tbody>
         {% for call in calls %}
-        <tr>
-            <td>{{ call.start|date:'H:i:s.u' }}</td>
-            <td>{{ call.duration }}</td>
+        <tr class="{{ call.function }}">
+            <td>{{ call.duration }} ms</sup></td>
             <td>{{ call.function }}</td>
             <td>{{ call.args }}</td>
+            <td><pre>{{ call.ret }}</pre></td>
             <td>
                 <a class="djMemcacheShowStacktrace" href="#">{% trans 'Stacktrace' %}</a>
             </td>

@@ -1,7 +1,7 @@
 # work around modules with the same name
 from __future__ import absolute_import
 
-from memcache_toolbar.panels import BasePanel, record
+from cache_toolbar.panels import BasePanel, record
 import logging
 
 DEBUG = False
@@ -86,6 +86,6 @@ except:
     else:
         logger.debug('unable to install memcache.Client with tracking')
 
-
 class MemcachePanel(BasePanel):
     pass
+

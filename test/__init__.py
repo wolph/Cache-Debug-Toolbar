@@ -6,8 +6,8 @@ logging.basicConfig(level=logging.DEBUG)
 import unittest
 import pylibmc
 import memcache
-import memcache_toolbar.panels.memcache
-import memcache_toolbar.panels.pylibmc
+import cache_toolbar.panels.memcache
+import cache_toolbar.panels.pylibmc
 
 class TestCase(unittest.TestCase):
 
@@ -22,12 +22,12 @@ class TestCase(unittest.TestCase):
         self.assertTrue('duration' in call, base_message + ', duration missing')
 
     def assertLastCall(self, expected_function, expected_args, base_message):
-        self.assertCall(memcache_toolbar.panels.instance.last(),
+        self.assertCall(cache_toolbar.panels.instance.last(),
                 expected_function, expected_args, base_message)
 
     def assertLastCallRaised(self, expected_function, expected_args,
             base_message):
-        call = memcache_toolbar.panels.instance.last()
+        call = cache_toolbar.panels.instance.last()
         self.assertCall(call, expected_function, expected_args, base_message)
         self.assertTrue('exception' in call, base_message +
                 ', did not throw an exception')
@@ -35,7 +35,7 @@ class TestCase(unittest.TestCase):
 class TestPyLibMc(TestCase):
 
     def test_basic(self):
-        memcache_toolbar.panels.instance.reset()
+        cache_toolbar.panels.instance.reset()
 
         client = pylibmc.Client(['127.0.0.1'], binary=True)
         client.behaviors = {'tcp_nodelay': True, 'ketama': True}
@@ -113,9 +113,9 @@ class TestPyLibMc(TestCase):
         self.assertLastCall('delete', non_existent,
                 'simple delete, non-existent')
         # delete_multi (pylibmc implements this as foreach keys delete)
-        n = memcache_toolbar.panels.instance.size()
+        n = cache_toolbar.panels.instance.size()
         self.assertTrue(client.delete_multi(multi_keys), 'delete_multi')
-        calls = memcache_toolbar.panels.instance.calls()
+        calls = cache_toolbar.panels.instance.calls()
         # before + num_keys + the delete_multi
         self.assertEquals(n + len(multi_keys) + 1, len(calls),
                 'delete multi call count')
@@ -130,11 +130,11 @@ class TestPyLibMc(TestCase):
         self.assertEquals(client.get(incr), None, 'flush worked')
         self.assertLastCall('get', incr, 'flush worked')
 
-        self.assertEquals(26, memcache_toolbar.panels.instance.size(),
+        self.assertEquals(26, cache_toolbar.panels.instance.size(),
                 'total number of calls')
 
         # test out the panel, mainly resetting
-        panel = memcache_toolbar.panels.memcache.MemcachePanel()
+        panel = cache_toolbar.panels.memcache.MemcachePanel()
         nav_subtitle = panel.nav_subtitle()
         self.assertEquals(nav_subtitle[0:2], '26', 'pylibmc panel.nav_subtitle')
         # reset things
@@ -146,7 +146,7 @@ class TestPyLibMc(TestCase):
 class TestMemcache(TestCase):
 
     def test_basic(self):
-        memcache_toolbar.panels.instance.reset()
+        cache_toolbar.panels.instance.reset()
 
         client = memcache.Client(['127.0.0.1:11211'], debug=0)
 
@@ -229,11 +229,11 @@ class TestMemcache(TestCase):
         self.assertEquals(client.get(incr), None, 'flush worked')
         self.assertLastCall('get', incr, 'flush worked')
 
-        self.assertEquals(24, memcache_toolbar.panels.instance.size(),
+        self.assertEquals(24, cache_toolbar.panels.instance.size(),
                 'total number of calls')
 
         # test out the panel, mainly resetting
-        panel = memcache_toolbar.panels.memcache.MemcachePanel()
+        panel = cache_toolbar.panels.memcache.MemcachePanel()
         nav_subtitle = panel.nav_subtitle()
         self.assertEquals(nav_subtitle[0:2], '24', 
                 'memcache panel.nav_subtitle')
