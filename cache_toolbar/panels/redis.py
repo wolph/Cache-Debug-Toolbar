@@ -4,7 +4,6 @@ from __future__ import absolute_import
 from cache_toolbar import panels
 import logging
 import datetime
-import cPickle as pickle
 
 DEBUG = False
 logger = logging.getLogger(__name__)

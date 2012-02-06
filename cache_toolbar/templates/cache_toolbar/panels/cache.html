@@ -18,9 +18,11 @@
 </fieldset>
 {% for command, count in commands.iteritems %}
 <p class="fieldset">
-    <input class="filter" value=".{{ command }}" type="checkbox" />
-	<span class="legend">{{ command }}:</span>
-	<span>{{ count }}</span>
+    <label>
+        <input class="filter" value=".{{ command }}" type="checkbox">
+	    <span class="legend">{{ command }}:</span>
+	    <span>{{ count }}</span>
+    </label>
 </fieldset>
 {% endfor %}
 
@@ -49,20 +51,7 @@
             <td colspan=5>
                 {% if call.stacktrace %}
                 <div class="djSQLHideStacktraceDiv">
-                    <table>
-                        <tr>
-                            <th>{% trans "Line" %}</th>
-                            <th>{% trans "Method" %}</th>
-                            <th>{% trans "File" %}</th>
-                        </tr>
-                        {% for file, line, method in call.stacktrace %}
-                        <tr>
-                            <td>{{ line }}</td>
-                            <td><code>{{ method|escape }}</code></td>
-                            <td><code>{{ file|escape }}</code></td>
-                        </tr>
-                        {% endfor %}
-                    </table>
+                    <pre class="stack">{{ call.stacktrace }}</pre>
                     {% if call.template_info %}
                     <table>
                         {% for line in call.template_info.context %}

@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 from datetime import datetime
 from debug_toolbar.panels import DebugPanel
-from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from os.path import dirname, realpath
@@ -15,6 +14,8 @@ import threading
 import functools
 import cPickle as pickle
 import pprint
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
 
 logger = logging.getLogger(__name__)
 
@@ -54,45 +55,56 @@ socketserver_path = realpath(dirname(SocketServer.__file__))
 
 
 def tidy_stacktrace(strace):
-    trace = []
-    toolbar_settings = getattr(settings, 'DEBUG_TOOLBAR_CONFIG', {})
-    for s in strace[:-1]:
-        s_path = realpath(s[0])
-        if toolbar_settings.get('HIDE_DJANGO_SQL', True) \
-            and django_path in s_path and not 'django/contrib' in s_path:
+    stacktrace = []
+    for frame in strace:
+        params = map(
+            escape,
+            frame[0].rsplit('/', 1) + list(frame[1:]))
+        try:
+            stacktrace.append(u'<span class="path">{0}/</span>'
+                '<span class="file">{1}</span> in '
+                '<span class="func">{3}</span>('
+                '<span class="lineno">{2}</span>)\n  '
+                '<span class="code">{4}</span>'.format(*params)
+            )
+        except IndexError:
+            stacktrace.append(u'<span class="path">{0}/</span>'
+                '<span class="file">{1}</span> in '
+                '<span class="func">{3}</span>('
+                '<span class="lineno">{2}</span>)\n  '
+                '<span class="code">Couldnt find the code</span>'
+                .format(*params)
+            )
+            # This frame doesn't have the expected format, so
+            # skip it and move on to the next one
             continue
-        if socketserver_path in s_path:
-            continue
-        trace.append((s[0], s[1], s[2], s[3]))
-    return trace
-
+    return mark_safe('\n'.join(stacktrace))
 
 def repr_value(ret):
     try:
         if isinstance(ret, dict):
-            rkeys = ret.keys()
-            if '__pickle__' in rkeys:
-                rkeys.remove('__pickle__')
-                rkeys += pickle.loads(ret['__pickle__']).keys()
+            out = ret.copy()
+            pickle_ = out.pop('__pickle__', None)
+            if pickle_:
+                out.update(pickle.loads(pickle_))
 
-            ret = rkeys
         elif isinstance(ret, (list, tuple)) and len(ret) == 1:
-            ret, = ret
+            out, = ret
         else:
-            ret = ret
-    except:
+            out = ret
+    except Exception, e:
         try:
-            ret = 'Unable to parse: %r' % ret
+            out = 'Unable to parse: %r because: %r' % (ret, e)
         except:
-            ret = 'Unable to parse'
+            out = 'Unable to parse'
     
-    ret = pprint.pformat(ret, indent=False, width=100)
-    ret = ' '.join(ret.split())
+    out = pprint.pformat(out, indent=False, width=50)
+    out = ' '.join(out.split())
 
-    if ret[100:]:
-        return ret[:97] + '...'
+    if out[100:]:
+        return out[:97] + '...'
     else:
-        return ret[:100]
+        return out[:100]
 
 
 def record(func):
@@ -141,9 +153,9 @@ class BasePanel(DebugPanel):
             duration += call['duration']
         n = len(calls)
         if (n > 0):
-            return "%d calls, %0.2fms" % (n, duration)
+            return '%d calls, %0.2fms' % (n, duration)
         else:
-            return "0 calls"
+            return '0 calls'
 
     def title(self):
         return _('Cache Calls')
@@ -172,6 +184,8 @@ class BasePanel(DebugPanel):
                 # defaultdict would have been nice, but it kills the django
                 # templates system
                 commands[function] = commands.get(function, 0) + 1
+
+            calls = sorted(calls, key=lambda c: -c['duration'])
 
             if stats['misses'] and stats['hits']:
                 stats['hitratio'] = 100. / stats['hits'] / stats['misses']
