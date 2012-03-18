@@ -1,21 +1,21 @@
 # work around modules with the same name
 from __future__ import absolute_import
 
+import SocketServer
+import cPickle as pickle
+import django
+import functools
+import logging
+import pprint
+import threading
+import traceback
 from datetime import datetime
 from debug_toolbar.panels import DebugPanel
 from django.template.loader import render_to_string
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from os.path import dirname, realpath
-import django
-import logging
-import SocketServer
-import traceback
-import threading
-import functools
-import cPickle as pickle
-import pprint
-from django.utils.safestring import mark_safe
-from django.utils.html import escape
 
 logger = logging.getLogger(__name__)
 
