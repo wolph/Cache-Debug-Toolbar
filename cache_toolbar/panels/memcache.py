@@ -6,7 +6,7 @@ import logging
 
 DEBUG = False
 
-
+logger = logging.getLogger(__name__)
 try:
     import memcache as memc
 
@@ -76,15 +76,15 @@ try:
 
     # NOTE issubclass is true of both are the same class
     if not issubclass(memc.Client, TrackingMemcacheClient):
-        logging.debug('installing memcache.Client with tracking')
+        logger.debug('installing memcache.Client with tracking')
         origClient = memc.Client
         memc.Client = TrackingMemcacheClient
 
 except:
     if DEBUG:
-        logging.exception('unable to install memcache.Client with tracking')
+        logger.exception('unable to install memcache.Client with tracking')
     else:
-        logging.debug('unable to install memcache.Client with tracking')
+        logger.debug('unable to install memcache.Client with tracking')
 
 class MemcachePanel(BasePanel):
     pass

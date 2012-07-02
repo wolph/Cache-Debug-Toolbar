@@ -6,7 +6,7 @@ import logging
 
 DEBUG = False
 
-
+logger = logging.getLogger(__name__)
 try:
     import pylibmc
     import _pylibmc
@@ -124,14 +124,14 @@ try:
 
     # NOTE issubclass is true of both are the same class
     if not issubclass(pylibmc.Client, TrackingPylibmcClient):
-        logging.debug('installing pylibmc.Client with tracking')
+        logger.debug('installing pylibmc.Client with tracking')
         pylibmc.Client = TrackingPylibmcClient
 
 except:
     if DEBUG:
-        logging.exception('unable to install pylibmc.Client with tracking')
+        logger.exception('unable to install pylibmc.Client with tracking')
     else:
-        logging.debug('unable to install pylibmc.Client with tracking')
+        logger.debug('unable to install pylibmc.Client with tracking')
 
 
 class PylibmcPanel(BasePanel):
