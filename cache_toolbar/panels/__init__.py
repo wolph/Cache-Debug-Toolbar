@@ -5,7 +5,6 @@ import SocketServer
 import cPickle as pickle
 import django
 import functools
-import logging
 import pprint
 import threading
 import traceback
@@ -16,8 +15,6 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from os.path import dirname, realpath
-
-logger = logging.getLogger(__name__)
 
 
 class Calls:
