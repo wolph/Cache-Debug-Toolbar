@@ -76,7 +76,7 @@ try:
     origRedis = None
     # NOTE issubclass is true if both are the same class
     if not issubclass(redis.Redis, TrackingRedis):
-        logger.error('installing redis.client.Redis with tracking')
+        logger.debug('installing redis.client.Redis with tracking')
         origRedis = redis.Redis
         redis.Redis = TrackingRedis
 
