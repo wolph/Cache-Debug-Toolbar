@@ -6,7 +6,7 @@ import logging
 import datetime
 
 DEBUG = False
-logger = logging.getLogger(__name__)
+
 
 READ_METHODS = (
     'LLEN',
@@ -76,15 +76,15 @@ try:
     origRedis = None
     # NOTE issubclass is true if both are the same class
     if not issubclass(redis.Redis, TrackingRedis):
-        logger.error('installing redis.client.Redis with tracking')
+        logging.debug('installing redis.client.Redis with tracking')
         origRedis = redis.Redis
         redis.Redis = TrackingRedis
 
 except:
     if DEBUG:
-        logger.exception('unable to install redis.client.Redis with tracking')
+        logging.exception('unable to install redis.client.Redis with tracking')
     else:
-        logger.debug('unable to install redis.client.Redis with tracking')
+        logging.debug('unable to install redis.client.Redis with tracking')
 
 
 class RedisPanel(panels.BasePanel):
