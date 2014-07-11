@@ -62,23 +62,24 @@ def tidy_stacktrace(strace):
             frame[0].rsplit('/', 1) + list(frame[1:]))
         try:
             stacktrace.append(u'<span class="path">{0}/</span>'
-                '<span class="file">{1}</span> in '
-                '<span class="func">{3}</span>('
-                '<span class="lineno">{2}</span>)\n  '
-                '<span class="code">{4}</span>'.format(*params)
-            )
+                              '<span class="file">{1}</span> in '
+                              '<span class="func">{3}</span>('
+                              '<span class="lineno">{2}</span>)\n  '
+                              '<span class="code">{4}</span>'.format(*params)
+                              )
         except IndexError:
             stacktrace.append(u'<span class="path">{0}/</span>'
-                '<span class="file">{1}</span> in '
-                '<span class="func">{3}</span>('
-                '<span class="lineno">{2}</span>)\n  '
-                '<span class="code">Couldnt find the code</span>'
-                .format(*params)
-            )
+                              '<span class="file">{1}</span> in '
+                              '<span class="func">{3}</span>('
+                              '<span class="lineno">{2}</span>)\n  '
+                              '<span class="code">Couldnt find the code</span>'
+                              .format(*params)
+                              )
             # This frame doesn't have the expected format, so
             # skip it and move on to the next one
             continue
     return mark_safe('\n'.join(stacktrace))
+
 
 def repr_value(ret):
     try:
@@ -97,7 +98,7 @@ def repr_value(ret):
             out = 'Unable to parse: %r because: %r' % (ret, e)
         except:
             out = 'Unable to parse'
-    
+
     out = pprint.pformat(out, indent=False, width=50)
     out = ' '.join(out.split())
 
@@ -124,7 +125,7 @@ def record(func):
             # the clock stops now
             dur = datetime.now() - call['start']
             call['duration'] = ((dur.seconds * 1000)
-                + (dur.microseconds / 1000.0))
+                                + (dur.microseconds / 1000.0))
             if func.__name__.startswith('get'):
                 if ret is None:
                     call['miss'] = 1
@@ -202,7 +203,6 @@ class BasePanel(DebugPanel):
             })
 
             return render_to_string('cache_toolbar/panels/cache.html',
-                    context)
+                                    context)
         except Exception:
             traceback.print_exc()
-

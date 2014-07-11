@@ -54,7 +54,7 @@ try:
                 # the clock starts now
                 call['start'] = datetime.datetime.now()
                 ret = origRedis.execute_command(self, func_name,
-                    *args, **kwargs)
+                                                *args, **kwargs)
 
             finally:
                 # the clock stops now
@@ -89,4 +89,3 @@ except:
 
 class RedisPanel(panels.BasePanel):
     pass
-
