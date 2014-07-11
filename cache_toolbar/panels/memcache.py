@@ -86,6 +86,6 @@ except:
     else:
         logger.debug('unable to install memcache.Client with tracking')
 
+
 class MemcachePanel(BasePanel):
     pass
-

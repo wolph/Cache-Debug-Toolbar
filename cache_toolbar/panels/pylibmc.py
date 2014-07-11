@@ -136,4 +136,3 @@ except:
 
 class PylibmcPanel(BasePanel):
     pass
-
