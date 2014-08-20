@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='cache_toolbar',
-    version='1.0.0',
+    version='1.0.1',
     description='Django Cache Debug Toolbar for Redis, Memcache and PyLibMC',
     author='Rick van Hattem',
     author_email='Rick.van.Hattem@Fawo.nl',
