@@ -59,7 +59,7 @@ class TestPyLibMc(TestCase):
         self.assertLastCall('get', key, 'simple get')
         # set_multi
         multi = {'key1': 'value1', 'array': ['a1', 'a2'], 'bool': True}
-        multi_keys = list(multi.keys())
+        multi_keys = multi.keys()
         self.assertEqual(client.set_multi(multi), [], 'set multi')
         self.assertLastCall('set_multi', multi_keys, 'set_multi')
         # get_multi
@@ -171,7 +171,7 @@ class TestMemcache(TestCase):
         self.assertLastCall('get', key, 'simple get')
         # set_multi
         multi = {'key1': 'value1', 'array': ['a1', 'a2'], 'bool': True}
-        multi_keys = list(multi.keys())
+        multi_keys = multi.keys()
         self.assertEqual(client.set_multi(multi), [], 'set multi')
         self.assertLastCall('set_multi', multi_keys, 'set_multi')
         # get_multi

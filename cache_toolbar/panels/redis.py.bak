@@ -1,5 +1,5 @@
 # work around modules with the same name
-
+from __future__ import absolute_import
 
 from cache_toolbar import panels
 import logging

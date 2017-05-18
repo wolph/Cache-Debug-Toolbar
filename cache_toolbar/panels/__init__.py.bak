@@ -1,8 +1,8 @@
 # work around modules with the same name
+from __future__ import absolute_import
 
-
-import socketserver
-import pickle as pickle
+import SocketServer
+import cPickle as pickle
 import django
 import functools
 import logging
@@ -51,24 +51,24 @@ def _get_calls():
 # based on the function with the same name in ddt's sql, i'd rather just use
 # it than copy it, but i can't import it without things blowing up
 django_path = realpath(dirname(django.__file__))
-socketserver_path = realpath(dirname(socketserver.__file__))
+socketserver_path = realpath(dirname(SocketServer.__file__))
 
 
 def tidy_stacktrace(strace):
     stacktrace = []
     for frame in strace:
-        params = list(map(
+        params = map(
             escape,
-            frame[0].rsplit('/', 1) + list(frame[1:])))
+            frame[0].rsplit('/', 1) + list(frame[1:]))
         try:
-            stacktrace.append('<span class="path">{0}/</span>'
+            stacktrace.append(u'<span class="path">{0}/</span>'
                               '<span class="file">{1}</span> in '
                               '<span class="func">{3}</span>('
                               '<span class="lineno">{2}</span>)\n  '
                               '<span class="code">{4}</span>'.format(*params)
                               )
         except IndexError:
-            stacktrace.append('<span class="path">{0}/</span>'
+            stacktrace.append(u'<span class="path">{0}/</span>'
                               '<span class="file">{1}</span> in '
                               '<span class="func">{3}</span>('
                               '<span class="lineno">{2}</span>)\n  '
@@ -93,7 +93,7 @@ def repr_value(ret):
             out, = ret
         else:
             out = ret
-    except Exception as e:
+    except Exception, e:
         try:
             out = 'Unable to parse: %r because: %r' % (ret, e)
         except:
